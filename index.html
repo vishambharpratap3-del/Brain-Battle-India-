@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brain Battle India</title>
+
+<style>
+:root{
+  --bg:#0D0D0D;
+  --blue:#00E5FF;
+  --purple:#8E24AA;
+  --red:#FF1744;
+  --card:#111;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+
+body{
+  background:var(--bg);
+  color:white;
+  overflow-x:hidden;
+}
+
+h1,h2,h3{font-weight:800;}
+
+.container{
+  max-width:900px;
+  margin:auto;
+  padding:20px;
+}
+
+.center{text-align:center;}
+
+.btn{
+  padding:14px 25px;
+  border:none;
+  border-radius:30px;
+  font-size:16px;
+  cursor:pointer;
+  background:linear-gradient(45deg,var(--blue),var(--purple));
+  color:#000;
+  font-weight:bold;
+  box-shadow:0 0 15px var(--blue);
+  transition:0.3s;
+}
+.btn:hover{transform:scale(1.05);box-shadow:0 0 25px var(--purple);}
+
+.card{
+  background:var(--card);
+  border-radius:15px;
+  padding:20px;
+  margin:15px 0;
+  border:1px solid rgba(255,255,255,0.05);
+  transition:0.3s;
+}
+.card:hover{transform:translateY(-5px);}
+
+.progress{
+  height:10px;
+  background:#222;
+  border-radius:20px;
+  overflow:hidden;
+}
+.progress-bar{
+  height:100%;
+  width:0%;
+  background:var(--blue);
+}
+
+.option{
+  background:#1a1a1a;
+  padding:12px;
+  border-radius:10px;
+  margin:10px 0;
+  cursor:pointer;
+  transition:0.3s;
+}
+.option:hover{background:var(--purple);}
+
+.correct{background:#00c853 !important;}
+.wrong{background:var(--red) !important;}
+
+.hidden{display:none;}
+
+header{
+  text-align:center;
+  padding:40px 20px;
+}
+
+header h1{
+  font-size:32px;
+  color:var(--blue);
+}
+
+header p{
+  color:#aaa;
+  margin:10px 0;
+}
+
+.level-btn{
+  display:block;
+  width:100%;
+  margin:10px 0;
+}
+
+footer{
+  margin-top:40px;
+  padding:20px;
+  text-align:center;
+  font-size:14px;
+  color:#aaa;
+}
+
+img.profile{
+  width:90px;
+  height:90px;
+  border-radius:50%;
+  margin:10px;
+}
+
+/* Mobile */
+@media(max-width:600px){
+  header h1{font-size:26px;}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <img src="https://via.placeholder.com/100" class="profile">
+  <h1>Brain Battle India 🧠🔥</h1>
+  <p>Test Your Mind Power 🔥</p>
+  <button class="btn" onclick="showLevels()">Start Game</button>
+</header>
+
+<div class="container">
+
+<!-- Levels -->
+<div id="levels" class="hidden">
+  <h2 class="center">Choose Level 🎮</h2>
+  <button class="btn level-btn" onclick="startGame(1)">Level 1: Basic</button>
+  <button class="btn level-btn" onclick="startGame(2)">Level 2: Medium</button>
+  <button class="btn level-btn" onclick="startGame(3)">Level 3: Advanced</button>
+  <button class="btn level-btn" onclick="startGame(4)">Level 4: Expert</button>
+  <button class="btn level-btn" onclick="startGame(5)">Level 5: Master</button>
+</div>
+
+<!-- Game -->
+<div id="game" class="hidden">
+  <div class="progress"><div class="progress-bar" id="progress"></div></div>
+  <h3 id="question"></h3>
+  <div id="options"></div>
+  <p>⏱ Time: <span id="timer">10</span>s | Score: <span id="score">0</span></p>
+</div>
+
+<!-- Result -->
+<div id="result" class="hidden center">
+  <h2>🎉 Result</h2>
+  <p>Your Score: <span id="finalScore"></span></p>
+  <p id="rank"></p>
+  <button class="btn" onclick="location.reload()">Play Again</button>
+  <button class="btn" onclick="share()">Share 🔥</button>
+</div>
+
+<!-- Daily Challenge -->
+<div class="card center">
+  <h3>🔥 Daily Challenge</h3>
+  <p>What comes next? 2, 6, 12, 20, ?</p>
+  <p><b>Answer:</b> 30</p>
+</div>
+
+<!-- Contact -->
+<div class="card center">
+  <h3>Contact 📩</h3>
+  <p>Email: your@email.com</p>
+  <p>
+    <a href="#">Instagram</a> |
+    <a href="#">WhatsApp</a> |
+    <a href="#">YouTube</a>
+  </p>
+</div>
+
+</div>
+
+<footer>
+  © 2026 Brain Battle India 🚀
+</footer>
+
+<script>
+let questions = [
+{q:"5 + 3 = ?",o:["6","8","9","7"],a:1,l:1},
+{q:"2 × 4 = ?",o:["6","8","10","12"],a:1,l:1},
+{q:"Which is even?",o:["3","5","8","7"],a:2,l:1},
+
+{q:"12 + 15 = ?",o:["25","27","30","20"],a:1,l:2},
+{q:"Find next: 2,4,8,16,?",o:["18","20","32","24"],a:2,l:2},
+{q:"Square of 6?",o:["12","18","36","30"],a:2,l:2},
+
+{q:"If A=1, B=2 then C=?",o:["1","2","3","4"],a:2,l:3},
+{q:"Odd one out?",o:["Dog","Cat","Tiger","Car"],a:3,l:3},
+{q:"15% of 200?",o:["20","25","30","40"],a:2,l:3},
+
+{q:"Speed formula?",o:["D/T","T/D","DxT","None"],a:0,l:4},
+{q:"Derivative of x²?",o:["2x","x","x²","1"],a:0,l:4},
+{q:"Capital of India?",o:["Delhi","Mumbai","Kolkata","Chennai"],a:0,l:4},
+
+{q:"Who wrote Constitution?",o:["Nehru","Ambedkar","Gandhi","Modi"],a:1,l:5},
+{q:"GDP stands for?",o:["Gross Dev","Gross Domestic Product","Growth","None"],a:1,l:5},
+{q:"UN founded?",o:["1945","1950","1930","1920"],a:0,l:5}
+];
+
+let current=0,score=0,timer=10,interval,level=1;
+
+function showLevels(){
+  document.getElementById('levels').classList.remove('hidden');
+}
+
+function startGame(lvl){
+  level=lvl;
+  document.getElementById('levels').classList.add('hidden');
+  document.getElementById('game').classList.remove('hidden');
+  current=0;score=0;
+  loadQuestion();
+}
+
+function loadQuestion(){
+  let qset=questions.filter(q=>q.l===level);
+  if(current>=qset.length){endGame();return;}
+  let q=qset[current];
+  document.getElementById('question').innerText=q.q;
+  let optHTML="";
+  q.o.forEach((opt,i)=>{
+    optHTML+=`<div class="option" onclick="check(${i})">${opt}</div>`;
+  });
+  document.getElementById('options').innerHTML=optHTML;
+  timer=10;
+  startTimer();
+}
+
+function startTimer(){
+  clearInterval(interval);
+  interval=setInterval(()=>{
+    timer--;
+    document.getElementById('timer').innerText=timer;
+    if(timer<=0){next();}
+  },1000);
+}
+
+function check(i){
+  let qset=questions.filter(q=>q.l===level);
+  let q=qset[current];
+  let opts=document.querySelectorAll('.option');
+  if(i===q.a){
+    score+=10;
+    opts[i].classList.add('correct');
+  }else{
+    opts[i].classList.add('wrong');
+  }
+  document.getElementById('score').innerText=score;
+  setTimeout(next,800);
+}
+
+function next(){
+  current++;
+  loadQuestion();
+}
+
+function endGame(){
+  document.getElementById('game').classList.add('hidden');
+  document.getElementById('result').classList.remove('hidden');
+  document.getElementById('finalScore').innerText=score;
+
+  let rank="Normal";
+  if(score>30) rank="Smart 😎";
+  if(score>60) rank="Genius 🔥";
+  document.getElementById('rank').innerText="Rank: "+rank;
+}
+
+function share(){
+  alert("Share your score with friends 🔥");
+}
+</script>
+
+</body>
+  </html>
